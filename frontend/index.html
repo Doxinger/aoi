@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0B0F">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="/assets/img/logo.png">
+<title>АОИ — аниме без лишнего</title>
+<link rel="stylesheet" href="/assets/css/tokens.css">
+<link rel="stylesheet" href="/assets/css/base.css">
+<link rel="stylesheet" href="/assets/css/layout.css">
+<link rel="stylesheet" href="/assets/css/components.css">
+<link rel="stylesheet" href="/assets/css/hero.css">
+<link rel="stylesheet" href="/assets/css/catalog.css">
+<link rel="stylesheet" href="/assets/css/player.css">
+<link rel="stylesheet" href="/assets/css/continue.css">
+<link rel="stylesheet" href="/assets/css/search.css">
+<link rel="stylesheet" href="/assets/css/responsive.css">
+<link rel="stylesheet" href="/assets/css/auth.css">
+</head>
+<body>
+<div class="shell">
+  <div class="nav-wrap">
+    <header class="nav">
+      <div class="brand"><img class="brand-logo" src="/assets/img/logo.png" alt="" aria-hidden="true"><span>АОИ</span></div>
+      <div class="search">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        <input id="search" type="search" lang="ru" placeholder="Найти аниме по названию…" autocomplete="off" aria-label="Поиск аниме">
+      </div>
+      <nav class="nav-links" aria-label="Категории">
+        <button class="chip active" data-mode="popular">Популярное</button>
+        <button class="chip" data-mode="ongoing">Онгоинги</button>
+        <button class="chip" data-mode="saved">Закладки</button>
+        <button class="chip" data-mode="history">История</button>
+      </nav>
+      <div class="acct-wrap">
+        <button class="acct" id="acctBtn" type="button" aria-label="Войти"></button>
+        <div class="acct-menu" id="acctMenu" hidden>
+          <div class="acct-head">
+            <span class="acct-ava" id="menuAva"></span>
+            <div class="acct-id"><div class="acct-menu-name" id="menuName"></div><div class="acct-menu-mail" id="menuMail"></div></div>
+          </div>
+          <button class="acct-logout" id="logoutBtn" type="button">Выйти</button>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <main>
+    <section class="hero" aria-label="Аниме дня">
+      <div class="hero-bg" id="heroBg"></div>
+      <div class="hero-content" id="heroContent">
+        <div class="meta" id="heroMeta"></div>
+        <h1 id="heroTitle">Загружаем<br>вашу историю</h1>
+        <p class="hero-desc" id="heroDesc">Подбираем истории, к которым хочется возвращаться.</p>
+        <div class="actions">
+          <button class="primary" id="heroWatch"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Смотреть</button>
+          <button class="secondary" id="heroMore"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg> Подробнее</button>
+          <button class="icon-btn lg" id="heroSave" aria-label="Закладки"></button>
+        </div>
+        <div class="dots" id="heroDots"></div>
+      </div>
+    </section>
+
+    <section id="cont" class="cont" hidden>
+      <div class="section-head cont-head">
+        <div class="sh-title"><span class="sh-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg></span><h2>Продолжить просмотр</h2></div>
+        <div class="arrows">
+          <button class="icon-btn" id="contPrev" aria-label="Листать назад"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+          <button class="icon-btn" id="contNext" aria-label="Листать вперёд"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+      </div>
+      <div class="cont-row" id="contRow"></div>
+    </section>
+
+    <section id="catalog">
+      <div class="section-head">
+        <div><h2 id="sectionTitle">Популярное аниме</h2><p id="sectionSubtitle">Истории, которые стоит посмотреть</p></div>
+        <span class="section-note" id="countLabel"></span>
+      </div>
+      <div class="filters" id="filters">
+        <button class="filter active" data-genre="all">Все</button>
+        <button class="filter" data-genre="Action">Экшен</button>
+        <button class="filter" data-genre="Adventure">Приключения</button>
+        <button class="filter" data-genre="Drama">Драма</button>
+        <button class="filter" data-genre="Fantasy">Фэнтези</button>
+        <button class="filter" data-genre="Romance">Романтика</button>
+        <button class="filter" data-genre="Sci-Fi">Фантастика</button>
+        <button class="filter" data-genre="Comedy">Комедия</button>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+  <div class="foot"><a href="/oferta">Оферта</a><a href="/pravoobladatelyam">Правообладателям</a></div>
+</div>
+
+<nav class="dock" aria-label="Мобильная навигация">
+  <button class="active" data-dock="popular"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>Главная</button>
+  <button data-dock="ongoing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Онгоинги</button>
+  <button class="dock-search" data-dock="search" aria-label="Поиск"><span class="ds-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span>Поиск</button>
+  <button data-dock="saved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-3.8L6 21z"/></svg>Закладки</button>
+  <button data-dock="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg>История</button>
+</nav>
+
+<div class="page" id="page" role="dialog" aria-modal="true" aria-labelledby="pTitle">
+  <div class="page-bg" id="pBg"></div>
+  <div class="page-in">
+    <div class="bar">
+      <button class="icon-btn" id="pBack" aria-label="Назад"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+      <strong id="pBar"></strong>
+      <button class="icon-btn" id="pSave" aria-label="Закладки"></button>
+    </div>
+    <div class="pl"><iframe id="frame" title="Видеоплеер" allow="fullscreen; autoplay; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="pl-note" id="plNote"></div></div>
+    <div class="vh">Озвучка</div>
+    <div class="voices" id="voices"></div>
+    <div class="info">
+      <img class="cover" id="pCover" alt="">
+      <div>
+        <h2 id="pTitle"></h2><div class="orig" id="pOrig"></div>
+        <div class="rate" id="pRate"></div>
+        <div class="meta" id="pMeta" style="margin:0"></div>
+      </div>
+      <p class="desc" id="pDesc"></p>
+    </div>
+    <div class="tags" id="pTags"></div>
+  </div>
+</div>
+
+<div class="sp" id="sp" role="dialog" aria-modal="true" aria-label="Поиск аниме">
+  <div class="sp-in">
+    <div class="sp-bar">
+      <label class="sp-field">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        <input id="spInput" type="search" lang="ru" inputmode="search" enterkeyhint="search" placeholder="Поиск аниме по названию" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Поиск аниме">
+        <button class="sp-clear" id="spClear" type="button" aria-label="Очистить" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      </label>
+      <button class="icon-btn lg" id="spClose" type="button" aria-label="Закрыть поиск"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="sp-head" id="spHead" hidden><h2>Результаты поиска</h2><span class="sp-count" id="spCount"></span></div>
+    <div class="sp-body" id="spBody"></div>
+  </div>
+</div>
+
+<div class="auth" id="authModal" role="dialog" aria-modal="true" aria-label="Вход и регистрация" hidden>
+  <div class="auth-card">
+    <button class="icon-btn auth-x" id="authClose" type="button" aria-label="Закрыть"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <div class="auth-logo"><img src="/assets/img/logo.png" alt="" aria-hidden="true"><span>АОИ</span></div>
+    <div class="auth-tabs" role="tablist" aria-label="Аккаунт">
+      <button type="button" class="auth-tab active" data-atab="login" role="tab">Вход</button>
+      <button type="button" class="auth-tab" data-atab="register" role="tab">Регистрация</button>
+    </div>
+    <form class="auth-form" id="loginForm" novalidate>
+      <label class="auth-field"><span>Логин или почта</span><input name="login" type="text" autocomplete="username" maxlength="254" placeholder="username или mail@example.com" aria-label="Логин или почта"></label>
+      <label class="auth-field"><span>Пароль</span><input name="password" type="password" autocomplete="current-password" maxlength="128" placeholder="••••••••" aria-label="Пароль"></label>
+      <div class="auth-error" id="loginError" role="alert" hidden></div>
+      <button class="primary auth-submit" type="submit">Войти</button>
+    </form>
+    <form class="auth-form" id="registerForm" novalidate hidden>
+      <label class="auth-field"><span>Имя</span><input name="username" type="text" autocomplete="username" minlength="3" maxlength="32" placeholder="Как к вам обращаться" aria-label="Имя"></label>
+      <label class="auth-field"><span>Почта</span><input name="email" type="email" autocomplete="email" maxlength="254" placeholder="mail@example.com" aria-label="Почта"></label>
+      <label class="auth-field"><span>Пароль</span><input name="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" placeholder="Минимум 8 символов" aria-label="Пароль"></label>
+      <div class="auth-error" id="registerError" role="alert" hidden></div>
+      <button class="primary auth-submit" type="submit">Создать аккаунт</button>
+      <p class="auth-note">Закладки и история просмотра будут синхронизироваться между устройствами.</p>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module" src="/assets/js/app.js"></script>
+</body>
+</html>

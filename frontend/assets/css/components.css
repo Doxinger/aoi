@@ -1,0 +1,14 @@
+.primary,.secondary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 20px;border-radius:var(--r-btn);border:1px solid var(--line);text-decoration:none;font-size:13px;font-weight:700;transition:transform .2s var(--ease),background .2s,border-color .2s,box-shadow .2s}
+.primary{background:var(--grad);color:#fff;border-color:transparent;box-shadow:var(--glow)}
+.primary:hover{box-shadow:var(--glow-strong);transform:translateY(-1px)}
+.secondary{background:var(--glass);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.secondary:hover{background:var(--glass-hover);border-color:var(--line-strong)}
+
+.icon-btn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:var(--r-micro);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--text);transition:background .2s,border-color .2s,box-shadow .2s,color .2s}
+.icon-btn:hover{background:rgba(255,255,255,.09);border-color:var(--line-strong)}
+.icon-btn.saved{background:var(--grad);border-color:transparent;color:#fff;box-shadow:var(--glow)}
+.icon-btn.lg{width:46px;height:46px;flex:none}
+
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;color:#e4e1ee;font-size:12px;font-weight:600;margin-bottom:14px}
+.meta span,.tag{padding:6px 10px;border:1px solid var(--line);border-radius:var(--r-chip);background:var(--glass);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);font-size:12px}
+.meta b{color:var(--accent);font-weight:800;margin-left:4px}

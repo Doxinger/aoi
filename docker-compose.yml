@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: aoi-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: aoi
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aoi}
+      POSTGRES_DB: aoi
+    command: >
+      postgres
+      -c max_connections=300
+      -c shared_buffers=512MB
+      -c effective_cache_size=1536MB
+      -c work_mem=8MB
+      -c maintenance_work_mem=128MB
+      -c random_page_cost=1.1
+      -c max_wal_size=2GB
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - aoi_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aoi -d aoi"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  aoi_pgdata:
