@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="/assets/css/search.css">
 <link rel="stylesheet" href="/assets/css/responsive.css">
 <link rel="stylesheet" href="/assets/css/auth.css">
+<link rel="stylesheet" href="/assets/css/rows.css">
 </head>
 <body>
 <div class="shell">
@@ -77,6 +78,49 @@
       <div class="cont-row" id="contRow"></div>
     </section>
 
+    <section id="home" class="home">
+    <section class="rowsec" id="sec-ongoing">
+      <div class="section-head row-head">
+        <div class="sh-title"><img class="sh-img" src="/assets/img/ico-ongoing.png" alt="" aria-hidden="true"><h2>Онгоинги</h2></div>
+        <div class="arrows">
+          <button class="icon-btn" data-scroll="ongoing" data-dir="-1" aria-label="Листать назад"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>
+          <button class="icon-btn" data-scroll="ongoing" data-dir="1" aria-label="Листать вперёд"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="hrow" id="row-ongoing"></div>
+    </section>
+    <section class="rowsec" id="sec-hype">
+      <div class="section-head row-head">
+        <div class="sh-title"><img class="sh-img" src="/assets/img/ico-hype.png" alt="" aria-hidden="true"><h2>На хайпе</h2></div>
+        <div class="arrows">
+          <button class="icon-btn" data-scroll="hype" data-dir="-1" aria-label="Листать назад"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>
+          <button class="icon-btn" data-scroll="hype" data-dir="1" aria-label="Листать вперёд"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="hrow" id="row-hype"></div>
+    </section>
+    <section class="rowsec" id="sec-fresh">
+      <div class="section-head row-head">
+        <div class="sh-title"><img class="sh-img" src="/assets/img/ico-fresh.png" alt="" aria-hidden="true"><h2>Новые серии</h2></div>
+        <div class="arrows">
+          <button class="icon-btn" data-scroll="fresh" data-dir="-1" aria-label="Листать назад"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>
+          <button class="icon-btn" data-scroll="fresh" data-dir="1" aria-label="Листать вперёд"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="hrow" id="row-fresh"></div>
+    </section>
+    <section class="rowsec" id="sec-top">
+      <div class="section-head row-head">
+        <div class="sh-title"><img class="sh-img" src="/assets/img/ico-top.png" alt="" aria-hidden="true"><h2>Популярное за все годы</h2></div>
+        <div class="arrows">
+          <button class="icon-btn" data-scroll="top" data-dir="-1" aria-label="Листать назад"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>
+          <button class="icon-btn" data-scroll="top" data-dir="1" aria-label="Листать вперёд"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+        </div>
+      </div>
+      <div class="hrow" id="row-top"></div>
+    </section>
+    </section>
+
     <section id="catalog">
       <div class="section-head">
         <div><h2 id="sectionTitle">Популярное аниме</h2><p id="sectionSubtitle">Истории, которые стоит посмотреть</p></div>
@@ -95,6 +139,10 @@
       <div class="grid" id="grid"></div>
     </section>
   </main>
+  <div class="soc">
+    <span class="soc-label">Наши соцсети</span>
+    <a class="soc-tg" href="https://t.me/AoiAnm" target="_blank" rel="noopener noreferrer" aria-label="Telegram @AoiAnm"><img src="/assets/img/telegram.png" alt="" width="40" height="40"><span>@AoiAnm</span></a>
+  </div>
   <div class="foot"><a href="/oferta">Оферта</a><a href="/pravoobladatelyam">Правообладателям</a></div>
 </div>
 
@@ -114,12 +162,7 @@
       <strong id="pBar"></strong>
       <button class="icon-btn" id="pSave" aria-label="Закладки"></button>
     </div>
-    <div class="pl">
-      <div class="vp" id="vp" hidden></div>
-      <iframe id="frame" title="Видеоплеер" allow="fullscreen; autoplay; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" hidden></iframe>
-      <div class="pl-note" id="plNote"></div>
-    </div>
-    <div class="ep-bar" id="epBar" hidden></div>
+    <div class="pl"><iframe id="frame" title="Видеоплеер" allow="fullscreen; autoplay; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="pl-note" id="plNote"></div></div>
     <div class="vh">Озвучка</div>
     <div class="voices" id="voices"></div>
     <div class="info">
@@ -177,7 +220,6 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="/assets/js/vendor/hls.min.js"></script>
 <script type="module" src="/assets/js/app.js"></script>
 </body>
 </html>

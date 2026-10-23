@@ -22,6 +22,7 @@ button.pf-ava:hover .pf-ava-hint{opacity:1}
 .pf-sm{min-height:38px;padding:0 15px;font-size:12.5px}
 
 .pf-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pf-stats-2{grid-template-columns:repeat(2,1fr)}
 .pf-stat{padding:20px 16px;text-align:center;border:1px solid var(--line);border-radius:var(--r-card);background:var(--glass)}
 .pf-stat-num{font-family:var(--f-display);font-size:24px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .pf-stat-label{margin-top:7px;color:var(--muted);font-size:12px;font-weight:600}
