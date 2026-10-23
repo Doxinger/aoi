@@ -2,6 +2,7 @@ export const KEYS = {
   saved: 'aoi-saved-v2',
   cont: 'aoi-cont-v1',
   recent: 'aoi-recent-v1',
+  quality: 'aoi-quality-v1',
   voice: key => `aoi-voice-${key}`
 };
 

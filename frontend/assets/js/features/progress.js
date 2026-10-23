@@ -3,6 +3,7 @@ import { KEYS, write } from '../core/store.js';
 import { state } from '../state.js';
 import { slim } from '../ui/format.js';
 import { dropCont, pushCont } from './sync.js';
+import { checkEpisodeEnd, noteActivity } from './watchstats.js';
 
 export const contList = () => Object.values(state.cont)
   .filter(entry => entry && entry.item && !state.blocked.has(entry.item.key))
@@ -50,6 +51,8 @@ addEventListener('message', event => {
   if (!data || typeof data !== 'object') return;
   if (data.key === 'kodik_player_time_update') {
     state.live.t = Number(data.value) || 0;
+    noteActivity();
+    checkEpisodeEnd();
     contFlush();
   } else if (data.key === 'kodik_player_duration_update') {
     state.live.dur = Number(data.value) || 0;
@@ -62,6 +65,7 @@ addEventListener('message', event => {
       state.live.ep = Number(value);
     }
     state.live.t = 0;
+    noteActivity();
   } else if (data.key === 'kodik_player_pause') {
     contFlush(true);
   }

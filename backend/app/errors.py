@@ -38,3 +38,7 @@ class TokenExpiredError(AppError):
 
 class RateLimitError(AppError):
     status = 429
+
+
+class NotFoundError(AppError):
+    status = 404

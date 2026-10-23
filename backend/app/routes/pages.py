@@ -28,6 +28,16 @@ async def oferta():
     return await _page("oferta.html")
 
 
+@pages_bp.get("/profile")
+async def profile_page():
+    return await _page("profile.html")
+
+
+@pages_bp.get("/u/<path:value>")
+async def user_page(value):
+    return await _page("profile.html")
+
+
 @pages_bp.get("/pravoobladatelyam")
 async def rights():
     return await _page("pravoobladatelyam.html")

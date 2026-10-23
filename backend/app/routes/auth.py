@@ -14,7 +14,7 @@ from ..auth import (
     set_auth_cookies,
     user_json,
 )
-from ..config import login_limit, register_limit
+from ..config import login_limit, password_change_limit, register_limit
 from ..errors import AuthError, ConflictError, RateLimitError, ValidationError
 from ..ratelimit import limiter
 from ..responses import json_response
@@ -79,6 +79,10 @@ async def register():
                     "SELECT 1 FROM users WHERE lower(username) = lower($1)", username
                 )
                 raise ConflictError("Имя уже занято" if taken_name else "Почта уже используется")
+            await conn.execute(
+                "INSERT INTO profiles (user_id) VALUES ($1) ON CONFLICT (user_id) DO NOTHING",
+                row["id"],
+            )
             access_token, refresh_token = await issue_session(
                 conn, row["id"], request.user_agent.string, ip
             )
@@ -99,9 +103,10 @@ async def login():
     async with db.pool().acquire() as conn:
         row = await conn.fetchrow(
             """
-            SELECT id, username, email, password_hash, created_at
-            FROM users
-            WHERE lower(username) = lower($1) OR lower(email) = lower($1)
+            SELECT u.id, u.username, u.email, u.password_hash, u.created_at, p.avatar_url
+            FROM users u
+            LEFT JOIN profiles p ON p.user_id = u.id
+            WHERE lower(u.username) = lower($1) OR lower(u.email) = lower($1)
             LIMIT 1
             """,
             identity,
@@ -148,7 +153,12 @@ async def refresh():
                 raise AuthError("Требуется вход")
             await conn.execute("UPDATE sessions SET revoked_at = now() WHERE id = $1", session["id"])
             row = await conn.fetchrow(
-                "SELECT id, username, email, created_at FROM users WHERE id = $1",
+                """
+                SELECT u.id, u.username, u.email, u.created_at, p.avatar_url
+                FROM users u
+                LEFT JOIN profiles p ON p.user_id = u.id
+                WHERE u.id = $1
+                """,
                 session["user_id"],
             )
             if row is None:
@@ -187,3 +197,68 @@ async def logout():
 async def me():
     row = await current_user()
     return json_response({"user": user_json(row)})
+
+
+@auth_bp.post("/password")
+async def change_password():
+    user = await current_user()
+    ip = client_ip()
+    _guard("password", ip or "unknown", password_change_limit(), 3600)
+    data = await _json_body()
+    current = data.get("currentPassword")
+    new = data.get("newPassword")
+    if not isinstance(current, str) or not current:
+        raise ValidationError("Введите текущий пароль")
+    if not isinstance(new, str) or not 8 <= len(new) <= 128:
+        raise ValidationError("Новый пароль: от 8 до 128 символов")
+    password_hash = await db.fetchval(
+        "SELECT password_hash FROM users WHERE id = $1", user["id"]
+    )
+    valid = await asyncio.to_thread(security.verify_password, password_hash, current[:128])
+    if not valid:
+        raise AuthError("Неверный текущий пароль")
+    new_hash = await asyncio.to_thread(security.hash_password, new)
+    keep_session = None
+    claims = security.decode_access_token(request.cookies.get("aoi_at", ""))
+    if claims and claims.get("sid"):
+        try:
+            keep_session = uuid.UUID(claims["sid"])
+        except ValueError:
+            keep_session = None
+    async with db.pool().acquire() as conn:
+        async with conn.transaction():
+            await conn.execute(
+                "UPDATE users SET password_hash = $1 WHERE id = $2", new_hash, user["id"]
+            )
+            if keep_session is not None:
+                await conn.execute(
+                    "UPDATE sessions SET revoked_at = now() "
+                    "WHERE user_id = $1 AND id <> $2 AND revoked_at IS NULL",
+                    user["id"],
+                    keep_session,
+                )
+            else:
+                await conn.execute(
+                    "UPDATE sessions SET revoked_at = now() WHERE user_id = $1 AND revoked_at IS NULL",
+                    user["id"],
+                )
+    return json_response({"ok": True})
+
+
+@auth_bp.delete("/account")
+async def delete_account():
+    user = await current_user()
+    data = await _json_body()
+    password = data.get("password")
+    if not isinstance(password, str) or not password:
+        raise ValidationError("Введите пароль")
+    password_hash = await db.fetchval(
+        "SELECT password_hash FROM users WHERE id = $1", user["id"]
+    )
+    valid = await asyncio.to_thread(security.verify_password, password_hash, password[:128])
+    if not valid:
+        raise AuthError("Неверный пароль")
+    await db.execute("DELETE FROM users WHERE id = $1", user["id"])
+    response = json_response({"ok": True})
+    clear_auth_cookies(response)
+    return response

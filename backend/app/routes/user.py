@@ -199,3 +199,54 @@ async def delete_cont(key):
         "DELETE FROM user_progress WHERE user_id = $1 AND item_key = $2", user["id"], key
     )
     return json_response({"ok": True})
+
+
+@user_bp.post("/stats/time")
+async def stats_time():
+    user = await current_user()
+    await _write_guard(user["id"])
+    body = await request.get_json(silent=True)
+    if not isinstance(body, dict):
+        raise ValidationError("Некорректный запрос")
+    seconds = body.get("seconds")
+    if isinstance(seconds, bool) or not isinstance(seconds, int) or not 1 <= seconds <= 300:
+        raise ValidationError("Некорректные данные")
+    await db.execute(
+        """
+        INSERT INTO profiles (user_id, watch_seconds)
+        VALUES ($1, $2)
+        ON CONFLICT (user_id)
+        DO UPDATE SET watch_seconds = profiles.watch_seconds + EXCLUDED.watch_seconds, updated_at = now()
+        """,
+        user["id"],
+        seconds,
+    )
+    return json_response({"ok": True})
+
+
+@user_bp.post("/stats/episode")
+async def stats_episode():
+    user = await current_user()
+    await _write_guard(user["id"])
+    body = await request.get_json(silent=True)
+    if not isinstance(body, dict):
+        raise ValidationError("Некорректный запрос")
+    key = _check_key(body.get("itemKey") if isinstance(body.get("itemKey"), str) else "")
+    ep = body.get("ep")
+    season = body.get("season")
+    if isinstance(ep, bool) or not isinstance(ep, int) or not 0 <= ep <= 9999:
+        raise ValidationError("Некорректные данные")
+    if isinstance(season, bool) or not isinstance(season, int) or not 0 <= season <= 999:
+        raise ValidationError("Некорректные данные")
+    await db.execute(
+        """
+        INSERT INTO user_episodes (user_id, item_key, ep, season)
+        VALUES ($1, $2, $3, $4)
+        ON CONFLICT DO NOTHING
+        """,
+        user["id"],
+        key,
+        ep,
+        season,
+    )
+    return json_response({"ok": True})

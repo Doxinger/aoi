@@ -31,7 +31,8 @@ def _register_error_handlers(app):
 
 def create_app():
     app = Quart(__name__, static_folder=str(FRONTEND_DIR), static_url_path="")
-    app.config["MAX_CONTENT_LENGTH"] = 1024 * 1024
+    app.config["MAX_CONTENT_LENGTH"] = 8 * 1024 * 1024
+    app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
     _register_error_handlers(app)
 
     @app.before_serving

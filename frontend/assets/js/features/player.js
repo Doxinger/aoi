@@ -7,6 +7,7 @@ import { state } from '../state.js';
 import { merge, rate, statusOf } from '../ui/format.js';
 import { contFlush } from './progress.js';
 import { syncSaveButton, toggleSave } from './saved.js';
+import { closeCustom, openCustom } from './vplayer.js';
 
 const HOSTS = /(^|\.)(kodikplayer\.com|kodik\.info|kodik\.biz|kodik\.cc|aniqit\.com)$/i;
 
@@ -45,7 +46,14 @@ function fill(item) {
 
 const voiceButton = voice => `<button class="voice" data-id="${esc(voice.id)}"><span>${esc(voice.name)}</span><small>${voice.eps ? voice.eps + ' эп.' : 'Фильм'}${voice.quality ? ' · ' + esc(voice.quality) : ''}</small></button>`;
 
-function play(voice, resume) {
+function runIframe(url) {
+  const frame = $('#frame');
+  frame.hidden = false;
+  frame.src = url;
+  $('#plNote').hidden = true;
+}
+
+async function play(voice, resume) {
   const url = voice && playUrl(voice.link, resume);
   if (!url) {
     toast('Не удалось открыть плеер');
@@ -53,10 +61,13 @@ function play(voice, resume) {
   }
   state.curVoice = voice;
   state.live = resume ? { ep: resume.ep, season: resume.season, t: resume.t, dur: resume.dur } : {};
-  $('#frame').src = url;
-  $('#plNote').hidden = true;
   $('#voices').querySelectorAll('.voice').forEach(button => button.classList.toggle('active', button.dataset.id === String(voice.id)));
   write(KEYS.voice(state.cur.key), voice.id);
+  const started = await openCustom(voice.link, resume, () => runIframe(url));
+  if (!started) {
+    closeCustom();
+    runIframe(url);
+  }
   return true;
 }
 
@@ -77,6 +88,7 @@ export async function openPage(item, push = true, options = {}) {
   state.cur = item;
   state.curVoice = null;
   state.live = {};
+  closeCustom();
   fill(item);
   $('#frame').src = 'about:blank';
   $('#plNote').textContent = 'Подбираем озвучки…';
@@ -115,6 +127,7 @@ export async function openPage(item, push = true, options = {}) {
 
 export function hidePage() {
   contFlush(true);
+  closeCustom();
   $('#page').classList.remove('open');
   $('#frame').src = 'about:blank';
   document.body.style.overflow = state.spOpen ? 'hidden' : '';

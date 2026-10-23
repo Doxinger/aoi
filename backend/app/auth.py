@@ -15,7 +15,7 @@ REFRESH_COOKIE = "aoi_rt"
 USERNAME_RE = re.compile(r"^[A-Za-zА-Яа-яЁё0-9_]{3,32}$")
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s.]+(\.[^@\s.]+)+$")
 
-_USER_SELECT = "u.id, u.username, u.email, u.created_at"
+_USER_SELECT = "u.id, u.username, u.email, u.created_at, p.avatar_url"
 
 
 def client_ip():
@@ -32,6 +32,7 @@ def user_json(row):
         "id": str(row["id"]),
         "username": row["username"],
         "email": row["email"],
+        "avatar": row.get("avatar_url"),
         "createdAt": row["created_at"].isoformat(),
     }
 
@@ -81,6 +82,7 @@ async def current_user():
         SELECT {_USER_SELECT}
         FROM sessions s
         JOIN users u ON u.id = s.user_id
+        LEFT JOIN profiles p ON p.user_id = u.id
         WHERE s.id = $1 AND s.user_id = $2 AND s.revoked_at IS NULL AND s.expires_at > now()
         """,
         session_id,

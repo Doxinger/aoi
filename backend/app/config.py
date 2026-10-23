@@ -53,11 +53,18 @@ def kodik_token():
 
 
 def server_host():
-    return "0.0.0.0" if os.environ.get("PORT") else "127.0.0.1"
+    env = read_env()
+    host = env.get("SERVER_HOST")
+    if host:
+        return host
+    return "0.0.0.0" if env.get("PORT") else "127.0.0.1"
 
 
 def server_port():
-    return int(os.environ.get("PORT", "8000"))
+    try:
+        return int(read_env().get("PORT") or "8000")
+    except ValueError:
+        return 8000
 
 
 def database_url():
@@ -114,3 +121,19 @@ def login_limit():
 
 def user_write_limit():
     return _int("AUTH_WRITE_LIMIT", 240)
+
+
+def kodik_play_limit():
+    return _int("KODIK_PLAY_LIMIT", 240)
+
+
+def password_change_limit():
+    return _int("AUTH_PASSWORD_LIMIT", 10)
+
+
+def avatar_upload_limit():
+    return _int("AVATAR_UPLOAD_LIMIT", 10)
+
+
+def avatar_max_bytes():
+    return _int("AVATAR_MAX_BYTES", 5 * 1024 * 1024)

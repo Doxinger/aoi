@@ -47,3 +47,30 @@ export async function apiSend(path, { method = 'GET', body } = {}) {
     clearTimeout(timer);
   }
 }
+
+export async function apiUpload(path, formData) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 90000);
+  try {
+    const response = await fetch(path, {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: formData,
+      credentials: 'same-origin',
+      signal: controller.signal
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(data.detail || 'Сервер не ответил');
+      error.status = response.status;
+      error.code = data.code;
+      throw error;
+    }
+    return data;
+  } catch (error) {
+    if (error.name === 'AbortError' || error.name === 'TypeError') throw new Error(NET_ERROR);
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
+}

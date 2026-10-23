@@ -43,6 +43,7 @@
             <span class="acct-ava" id="menuAva"></span>
             <div class="acct-id"><div class="acct-menu-name" id="menuName"></div><div class="acct-menu-mail" id="menuMail"></div></div>
           </div>
+          <a class="acct-item" href="/profile">Профиль</a>
           <button class="acct-logout" id="logoutBtn" type="button">Выйти</button>
         </div>
       </div>
@@ -113,7 +114,12 @@
       <strong id="pBar"></strong>
       <button class="icon-btn" id="pSave" aria-label="Закладки"></button>
     </div>
-    <div class="pl"><iframe id="frame" title="Видеоплеер" allow="fullscreen; autoplay; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><div class="pl-note" id="plNote"></div></div>
+    <div class="pl">
+      <div class="vp" id="vp" hidden></div>
+      <iframe id="frame" title="Видеоплеер" allow="fullscreen; autoplay; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" hidden></iframe>
+      <div class="pl-note" id="plNote"></div>
+    </div>
+    <div class="ep-bar" id="epBar" hidden></div>
     <div class="vh">Озвучка</div>
     <div class="voices" id="voices"></div>
     <div class="info">
@@ -171,6 +177,7 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="/assets/js/vendor/hls.min.js"></script>
 <script type="module" src="/assets/js/app.js"></script>
 </body>
 </html>

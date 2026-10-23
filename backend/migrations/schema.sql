@@ -25,6 +25,26 @@ CREATE UNIQUE INDEX IF NOT EXISTS sessions_refresh_hash_key ON sessions (refresh
 CREATE INDEX IF NOT EXISTS sessions_user_id_idx ON sessions (user_id);
 CREATE INDEX IF NOT EXISTS sessions_expires_at_idx ON sessions (expires_at);
 
+CREATE TABLE IF NOT EXISTS profiles (
+    user_id BIGINT PRIMARY KEY REFERENCES users (id) ON DELETE CASCADE,
+    avatar_url TEXT,
+    about VARCHAR(500) NOT NULL DEFAULT '',
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS user_episodes (
+    user_id BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    item_key VARCHAR(64) NOT NULL,
+    ep INTEGER NOT NULL DEFAULT 0,
+    season INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    PRIMARY KEY (user_id, item_key, season, ep)
+);
+
+CREATE INDEX IF NOT EXISTS user_episodes_user_idx ON user_episodes (user_id);
+
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS watch_seconds BIGINT NOT NULL DEFAULT 0;
+
 CREATE TABLE IF NOT EXISTS user_saved (
     user_id BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     item_key VARCHAR(64) NOT NULL,

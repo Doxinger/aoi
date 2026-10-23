@@ -45,9 +45,14 @@ function closeAuth() {
 export function renderAccount() {
   if (state.user) {
     const letter = state.user.username.charAt(0).toUpperCase();
-    acctBtn.innerHTML = `<span class="acct-ava">${esc(letter)}</span><span class="acct-name">${esc(state.user.username)}</span>`;
+    const ava = state.user.avatar
+      ? `<span class="acct-ava"><img src="${esc(state.user.avatar)}" alt=""></span>`
+      : `<span class="acct-ava">${esc(letter)}</span>`;
+    acctBtn.innerHTML = `${ava}<span class="acct-name">${esc(state.user.username)}</span>`;
     acctBtn.setAttribute('aria-label', 'Аккаунт');
-    $('#menuAva').textContent = letter;
+    $('#menuAva').innerHTML = state.user.avatar
+      ? `<img src="${esc(state.user.avatar)}" alt="">`
+      : esc(letter);
     $('#menuName').textContent = state.user.username;
     $('#menuMail').textContent = state.user.email;
   } else {
@@ -230,6 +235,14 @@ export async function bootAuth() {
     }
   }
   renderAccount();
+  const params = new URLSearchParams(location.search);
+  const authParam = params.get('auth');
+  if (authParam) {
+    params.delete('auth');
+    const query = params.toString();
+    history.replaceState(null, '', location.pathname + (query ? `?${query}` : ''));
+    if (!state.user) openAuth(authParam === 'register' ? 'register' : 'login');
+  }
   if (state.user) await mergeFromServer();
 }
 
